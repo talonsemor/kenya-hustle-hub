@@ -1,3 +1,32 @@
+// Submission form notification logic
+document.addEventListener('DOMContentLoaded', function(){
+  const form = document.getElementById('submitForm');
+  const msg = document.getElementById('submitMessage');
+  if(form){
+    form.addEventListener('submit', async function(e){
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form));
+      msg.textContent = 'Submitting...';
+      // Send email notification (using EmailJS or similar service)
+      try {
+        // Example: EmailJS integration (replace with your service)
+        await fetch('https://formspree.io/f/xwkzjvqd', {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        // WhatsApp alert (open WhatsApp chat with admin)
+        if(data.whatsapp){
+          window.open(`https://wa.me/254740582544?text=New%20hustle%20order%20from%20${encodeURIComponent(data.name)}%3A%20${encodeURIComponent(data.title)}%20-%20${encodeURIComponent(data.desc)}`,'_blank');
+        }
+        msg.textContent = 'Submission received! We will contact you soon.';
+        form.reset();
+      } catch(err){
+        msg.textContent = 'Error submitting. Please try again.';
+      }
+    });
+  }
+});
 
 const CONFIG = {
   feeds: [

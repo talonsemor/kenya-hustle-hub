@@ -15,14 +15,45 @@
           <em>Advertise and post your hustle today—let your story inspire and connect!</em>
         </div>
       <form id="submitForm">
-        <input name="name" placeholder="Your name" required>
-        <input name="title" placeholder="Hustle title" required>
-        <textarea name="desc" placeholder="Describe hustle" required></textarea>
-        <button type="submit" class="btn primary">Submit</button>
+        <form id="submitForm" action="https://formspree.io/f/xwkzjvqd" method="POST">
+          <div class="form-row">
+            <label for="name"><span style="color:var(--accent);font-weight:600">👤</span> Name</label>
+            <input name="name" id="name" placeholder="Your name" required>
+          </div>
+          <div class="form-row">
+            <label for="title"><span style="color:var(--accent);font-weight:600">💼</span> Hustle Title</label>
+            <input name="title" id="title" placeholder="Hustle title" required>
+          </div>
+          <div class="form-row">
+            <label for="desc"><span style="color:var(--accent);font-weight:600">📝</span> Description</label>
+            <textarea name="desc" id="desc" placeholder="Describe hustle" required></textarea>
+          </div>
+          <div class="form-row">
+            <label for="email"><span style="color:var(--accent);font-weight:600">✉️</span> Email</label>
+            <input name="email" id="email" type="email" placeholder="Your email (for updates)" required>
+          </div>
+          <div class="form-row">
+            <label for="whatsapp"><span style="color:var(--accent);font-weight:600">📱</span> WhatsApp Number</label>
+            <input name="whatsapp" id="whatsapp" type="tel" placeholder="WhatsApp number (optional)">
+          </div>
+          <button type="submit" class="btn primary" style="width:100%;margin-top:18px;font-size:1.1em">Submit</button>
+        </form>
       </form>
       <p id="submitMessage" class="small"></p>
+          <div class="payment-info small" style="margin-top:18px;">
+            <strong>Payment:</strong> Pay <span style="color:#2563eb">Ksh 300</span> via M-Pesa to <span style="color:#2563eb">0740582544</span> or use PayPal below.<br>
+            <span style="display:block;margin:8px 0;">Or use PayPal:</span>
+            <a href="https://www.paypal.com/paypalme/kenyahustlehub" target="_blank" class="btn small" style="background:#0070ba;color:#fff;margin-top:8px;">Pay with PayPal</a>
+          </div>
     </div>
   </main>
   <script type="module" src="js/app.js"></script>
+  <style>
+    .form-row { margin-bottom: 16px; display: flex; flex-direction: column; gap: 6px; }
+    .form-row label { font-size: 1em; color: var(--muted); font-weight: 500; }
+    .form-row input, .form-row textarea { padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(96,165,250,0.13); background: var(--card); color: var(--muted); font-size: 1em; }
+    .form-row input:focus, .form-row textarea:focus { outline: 2px solid var(--accent); }
+    .form-row textarea { min-height: 80px; resize: vertical; }
+  </style>
 </body>
 </html>
