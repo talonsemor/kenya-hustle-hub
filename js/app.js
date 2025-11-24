@@ -34,7 +34,52 @@ function showLoader(v){ loader.style.display = v ? 'flex' : 'none'; }
 menuBtn.addEventListener('click', ()=>{ const open = sideNav.classList.toggle('open'); menuBtn.classList.toggle('open', open); document.body.style.overflow = open ? 'hidden' : ''; });
 
 // THEME
-themeToggle && themeToggle.addEventListener('click', ()=>{ document.body.classList.toggle('light'); document.body.classList.toggle('dark'); });
+// THEME
+function applyTheme(theme){
+  if(!theme) return;
+  document.body.classList.toggle('light', theme === 'light');
+  document.body.classList.toggle('dark', theme === 'dark');
+}
+
+// apply saved theme (if any) or respect prefers-color-scheme
+try{
+  const savedTheme = localStorage.getItem('theme');
+  if(savedTheme){
+    applyTheme(savedTheme);
+  } else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
+    applyTheme('dark');
+  }
+}catch(e){ console.warn('Could not read theme from localStorage', e); }
+
+// set ARIA state for the theme toggle control
+function updateToggleAria(){
+  if(!themeToggle) return;
+  const isLight = document.body.classList.contains('light');
+  themeToggle.setAttribute('aria-checked', isLight ? 'true' : 'false');
+}
+
+// initialize toggle aria & keyboard support
+try{
+  updateToggleAria();
+  if(themeToggle){
+    // keyboard: space or enter toggles
+    themeToggle.addEventListener('keydown', (e)=>{
+      if(e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter'){
+        e.preventDefault();
+        themeToggle.click();
+      }
+    });
+
+    themeToggle.addEventListener('click', ()=>{
+      const isLight = document.body.classList.toggle('light');
+      document.body.classList.toggle('dark', !isLight);
+      const current = isLight ? 'light' : 'dark';
+      try{ localStorage.setItem('theme', current); }catch(e){ console.warn('Could not save theme', e); }
+      // update aria state
+      themeToggle.setAttribute('aria-checked', isLight ? 'true' : 'false');
+    });
+  }
+}catch(e){ console.warn('Theme toggle init error', e); }
 
 // populate UI
 function initUI(){
