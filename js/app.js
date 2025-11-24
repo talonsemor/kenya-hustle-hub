@@ -31,7 +31,9 @@ function el(q){return document.querySelector(q);}
 function showLoader(v){ loader.style.display = v ? 'flex' : 'none'; }
 
 // MENU
-menuBtn.addEventListener('click', ()=>{ const open = sideNav.classList.toggle('open'); menuBtn.classList.toggle('open', open); document.body.style.overflow = open ? 'hidden' : ''; });
+if(menuBtn && sideNav){
+  menuBtn.addEventListener('click', ()=>{ const open = sideNav.classList.toggle('open'); menuBtn.classList.toggle('open', open); document.body.style.overflow = open ? 'hidden' : ''; });
+}
 
 // THEME
 // THEME
@@ -83,17 +85,34 @@ try{
 
 // populate UI
 function initUI(){
-  // categories tabs
-  const cats = ['all', ...new Set(CONFIG.feeds.map(f=>f.category))];
+  // categories tabs: show only allowed categories to simplify UI
+  const ALLOWED_CATEGORIES = ['Local Biz', 'Scholarships'];
+  const cats = ['all', ...ALLOWED_CATEGORIES];
   cats.forEach(c=>{
-    const b = document.createElement('button'); b.className='tag'; b.textContent = c=='all' ? 'All' : c; b.dataset.cat = c; b.onclick = ()=> { filterByCategory(c); };
+    const b = document.createElement('button'); b.className='tag'; b.textContent = c=='all' ? 'All' : c; b.dataset.cat = c; b.onclick = ()=> {
+      // set active state on tabs
+      Array.from(categoryTabs.querySelectorAll('.tag')).forEach(el=>el.classList.remove('active'));
+      b.classList.add('active');
+      filterByCategory(c);
+    };
     categoryTabs.appendChild(b);
   });
-  // sources list
+  // sources list - include only feeds that match allowed categories
   sourceFilter.innerHTML = '<option value="all">All sources</option>';
-  CONFIG.feeds.forEach(f=> sourceFilter.appendChild(Object.assign(document.createElement('option'),{value:f.source,textContent:f.source})));
+  CONFIG.feeds.filter(f => ALLOWED_CATEGORIES.includes(f.category)).forEach(f=> sourceFilter.appendChild(Object.assign(document.createElement('option'),{value:f.source,textContent:f.source})));
   // quick tags
-  ['Online Jobs','Scholarships','Tenders','Local Biz','Training'].forEach(t=>{ const el = document.createElement('button'); el.className='tag'; el.textContent=t; el.onclick = ()=> filterByCategory(t); quickTags.appendChild(el); });
+  // quick tags - keep limited set (Local Biz, Scholarships)
+  ['Local Biz','Scholarships'].forEach(t=>{
+    const el = document.createElement('button'); el.className='tag'; el.textContent=t;
+    el.onclick = ()=>{
+      // mark as active and clear category tabs active
+      Array.from(quickTags.querySelectorAll('.tag')).forEach(x=>x.classList.remove('active'));
+      el.classList.add('active');
+      Array.from(categoryTabs.querySelectorAll('.tag')).forEach(x=>x.classList.remove('active'));
+      filterByCategory(t);
+    };
+    quickTags.appendChild(el);
+  });
 }
 
 // fetch feed via rss2json
@@ -105,7 +124,7 @@ async function loadAll(){
   const promises = CONFIG.feeds.map(async f=>{ const items = await fetchFeed(f.url); return items.map(it=>({ title: it.title||'Untitled', link: it.link||'#', description: (it.description||it.contentSnippet||'').replace(/<[^>]*>?/gm,''), pubDate: it.pubDate||it.isoDate||'', source: f.source, category: f.category })); });
   const results = await Promise.all(promises);
   ALL = results.flat().sort((a,b)=> new Date(b.pubDate)-new Date(a.pubDate));
-  index = 0; render(); renderSources(); renderDashboard();
+  index = 0; render(); renderSources();
   showLoader(false);
 }
 
@@ -125,34 +144,83 @@ function render(){
 function renderSources(){ sourcesEl.innerHTML=''; CONFIG.feeds.forEach(f=>{ const el = document.createElement('div'); el.className='src'; el.innerHTML = `<strong>${f.source}</strong><div class="small">${f.category}</div>`; sourcesEl.appendChild(el); }); }
 
 // filters
-function filterByCategory(cat){ if(cat==='all'){ index=0; render(); return; } const filtered = ALL.filter(it=> (it.category||'').toLowerCase() === cat.toLowerCase() ); itemsEl.innerHTML=''; filtered.slice(0,CONFIG.pageSize).forEach(it=>{ const d = document.createElement('article'); d.className='item card'; d.innerHTML = `<h3><a href="${it.link}" target="_blank" rel="noopener">${it.title}</a></h3><div class='meta'>${new Date(it.pubDate).toLocaleDateString()} • ${it.source}</div><p>${it.description.slice(0,240)}</p>`; itemsEl.appendChild(d); }); index = Math.min(filtered.length, CONFIG.pageSize); }
+function normalizeCat(s){ return (s||'').toString().trim().toLowerCase(); }
 
-// dashboard render
-function renderDashboard(){
-  // update stats if dashboard exists
-  const total = ALL.length;
-  const sources = new Set(ALL.map(i=>i.source)).size;
-  const categories = new Set(ALL.map(i=>i.category)).size;
-  const last = ALL.length ? new Date(ALL[0].pubDate).toLocaleString() : '—';
-  const elTotal = document.getElementById('totalItems'); if(elTotal) elTotal.textContent = total;
-  const elSources = document.getElementById('bySource'); if(elSources) elSources.textContent = sources;
-  const elCats = document.getElementById('byCategory'); if(elCats) elCats.textContent = categories;
-  const elLast = document.getElementById('lastUpdated'); if(elLast) elLast.textContent = last;
-  const topSources = document.getElementById('topSources'); if(topSources){
-    const counts = {}; ALL.forEach(i=> counts[i.source] = (counts[i.source]||0)+1);
-    topSources.innerHTML = Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([s,c])=>`<li>${s} — ${c}</li>`).join('');
+function filterByCategory(cat){
+  if(!cat || normalizeCat(cat) === 'all'){ index=0; render(); return; }
+  const wanted = normalizeCat(cat);
+  const filtered = ALL.filter(it=> normalizeCat(it.category) === wanted );
+  itemsEl.innerHTML='';
+  filtered.slice(0,CONFIG.pageSize).forEach(it=>{ const d = document.createElement('article'); d.className='item card'; d.innerHTML = `<h3><a href="${it.link}" target="_blank" rel="noopener">${it.title}</a></h3><div class='meta'>${new Date(it.pubDate).toLocaleDateString()} • ${it.source}</div><p>${it.description.slice(0,240)}</p>`; itemsEl.appendChild(d); });
+  index = Math.min(filtered.length, CONFIG.pageSize);
+  // if no items found for this category, show a small message
+  if(filtered.length === 0){
+    const note = document.createElement('div'); note.className='card small'; note.style.marginTop='12px'; note.textContent = `No items found for "${cat}".`;
+    itemsEl.appendChild(note);
   }
 }
 
+// dashboard logic removed (dashboard.html deleted)
+
+
 // UI events
-searchBtn.addEventListener('click', ()=>{ index=0; render(); });
-refreshBtn.addEventListener('click', ()=> loadAll());
-sourceFilter.addEventListener('change', ()=>{ index=0; render(); });
+if(searchBtn) searchBtn.addEventListener('click', ()=>{ index=0; render(); });
+if(refreshBtn) refreshBtn.addEventListener('click', ()=> loadAll());
+if(sourceFilter) sourceFilter.addEventListener('change', ()=>{ index=0; render(); });
 
 document.getElementById('exploreBtn')?.addEventListener('click', ()=> document.querySelector('#listings').scrollIntoView({behavior:'smooth'}));
 
-window.addEventListener('click', (e)=>{ if(sideNav.classList.contains('open')){ const inside = sideNav.contains(e.target) || menuBtn.contains(e.target); if(!inside){ sideNav.classList.remove('open'); menuBtn.classList.remove('open'); document.body.style.overflow = ''; } } });
+window.addEventListener('click', (e)=>{
+  if(sideNav && sideNav.classList.contains('open')){
+    const inside = (sideNav.contains(e.target)) || (menuBtn && menuBtn.contains(e.target));
+    if(!inside){ sideNav.classList.remove('open'); menuBtn && menuBtn.classList.remove('open'); document.body.style.overflow = ''; }
+  }
+});
+
 
 // init
 initUI();
 loadAll();
+
+// auto-refresh every 5 minutes
+const AUTO_REFRESH_MS = 5 * 60 * 1000;
+setInterval(() => { loadAll(); }, AUTO_REFRESH_MS);
+
+// Weather widget auto-refresh (moved from index.html)
+(function(){
+  const BOX_SEL = '.weather-box';
+  const ANCHOR_SEL = '.weatherwidget-io';
+  function buildAnchorHTML(href, label1, label2, theme){
+    return `<a class="weatherwidget-io" href="${href}" data-label_1="${label1}" data-label_2="${label2}" data-theme="${theme}">${label1} ${label2}</a>`;
+  }
+  function loadWidgetScript(){
+    const existing = document.getElementById('weatherwidget-io-js');
+    if(existing) existing.remove();
+    const js = document.createElement('script');
+    js.id = 'weatherwidget-io-js';
+    // cache-bust to force fresh network request
+    js.src = 'https://weatherwidget.io/js/widget.min.js?v=' + Date.now();
+    document.body.appendChild(js);
+  }
+  function refreshWidget(){
+    const box = document.querySelector(BOX_SEL);
+    if(!box) return;
+    const href = box.getAttribute('data-w-href');
+    const label1 = box.getAttribute('data-w-label1') || '';
+    const label2 = box.getAttribute('data-w-label2') || '';
+    const theme = box.getAttribute('data-w-theme') || 'original';
+    // remove any rendered widget or existing anchor
+    const existingAnchor = box.querySelector(ANCHOR_SEL);
+    if(existingAnchor) existingAnchor.remove();
+    // insert fresh anchor
+    box.insertAdjacentHTML('beforeend', buildAnchorHTML(href, label1, label2, theme));
+    // reload script to process the anchor
+    loadWidgetScript();
+  }
+  // Refresh interval (ms) - 10 minutes
+  const INTERVAL = 10 * 60 * 1000;
+  // schedule periodic refresh
+  setInterval(refreshWidget, INTERVAL);
+  // also attempt one refresh shortly after load to ensure widget initializes
+  setTimeout(refreshWidget, 1500);
+})();
