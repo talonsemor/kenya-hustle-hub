@@ -1,3 +1,60 @@
+
+/* Compact grid for small cards (like Tuko news) */
+.items.grid-small{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+.items.grid-small .item{
+  padding:10px;
+  border-radius:10px;
+  min-height:140px;
+}
+.items.grid-small .item h3{font-size:15px;margin:0 0 6px 0}
+.items.grid-small .item h3 a{display:block;color:var(--accent);text-decoration:none;font-weight:700}
+.items.grid-small .item h3 a:hover{text-decoration:underline}
+.items.grid-small .meta{font-size:12px;margin-top:6px;color:var(--muted)}
+.items.grid-small .item p{font-size:13px;color:var(--muted);margin-top:8px}
+.items.grid-small .item .btn.ghost{margin-top:8px;padding:6px 8px;font-size:13px}
+.items.grid-small .item:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(2,6,23,0.5)}
+
+/* Make the whole header area clearly clickable and keyboard accessible */
+.items.grid-small .item h3{line-height:1.2}
+.items.grid-small .item h3 a:focus{outline:3px solid rgba(96,165,250,0.12);outline-offset:3px}
+/* Contact link styling */
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  background: rgba(96,165,250,0.08);
+  color: var(--accent) !important;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(14,165,255,0.06);
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+}
+.contact-link:hover, .contact-link:focus {
+  background: linear-gradient(90deg, var(--accent), #7dd3fc);
+  color: #03203b !important;
+  box-shadow: 0 4px 16px rgba(14,165,255,0.13);
+  outline: 2px solid var(--accent);
+}
+
+/* Screen reader only utility */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 :root{--bg:#0b1220;--card:#0f1724;--muted:#9aa4b2;--accent:#0ea5ff;--glass:rgba(255,255,255,0.03);--success:#10b981;--danger:#ef4444}
 *{box-sizing:border-box}html,body{height:100%}body{margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto;color:#e6eef8;background:var(--bg)}.wrap{max-width:1100px;margin:0 auto;padding:18px}
@@ -111,3 +168,31 @@ a:visited {
 @media (prefers-reduced-motion: reduce){
   .theme-toggle, .theme-toggle .toggle-knob{transition:none}
 }
+
+/* Override tag spacing and sizing to improve spacing for the reduced category set */
+.tags{gap:12px !important; margin-top:10px !important}
+.tag{padding:6px 12px !important; line-height:1 !important}
+
+
+/* Weather widget styling */
+.weather-wrapper{padding:12px 18px 0}
+.weather-box{
+  display:inline-block;
+  max-width:320px;
+  width:100%;
+  padding:12px 14px;
+  border-radius:12px;
+  background:var(--card);
+  border:1px solid rgba(255,255,255,0.03);
+  box-shadow:0 8px 30px rgba(2,6,23,0.45);
+}
+.weather-box .small{color:var(--muted);margin-bottom:8px}
+
+/* Ensure embedded widget inherits theme spacing */
+.weather-box .weatherwidget-io{width:100%}
+
+@media (max-width:600px){
+  .weather-box{max-width:100%;padding:10px}
+  .weather-wrapper{padding-left:12px;padding-right:12px}
+}
+
