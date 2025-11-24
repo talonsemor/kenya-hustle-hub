@@ -1,0 +1,54 @@
+:root{
+  --bg: #0f1724;
+  --surface: #0b1220;
+  --muted: #94a3b8;
+  --accent: #60a5fa;
+  --accent-2: #7dd3fc;
+  --card: #0f1724;
+  --radius: 12px;
+  --shadow-1: 0 6px 18px rgba(2,6,23,0.6);
+  --glass: rgba(255,255,255,0.03);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,Roboto,-apple-system; background:var(--bg); color:#e6eef8;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1100px;margin:0 auto;padding:18px}
+
+/* header */
+.site-header{background:linear-gradient(180deg, rgba(6,11,20,0.6), rgba(6,11,20,0.2));border-bottom:1px solid rgba(255,255,255,0.03);position:sticky;top:0;z-index:50}
+.site-header .header-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 18px}
+.logo{font-weight:700;color:#fff;text-decoration:none}
+.nav-link{color:var(--muted);margin-left:12px;text-decoration:none}
+
+/* hero */
+.hero{padding:64px 18px;text-align:left}
+.hero h1{font-size:30px;margin:0 0 8px}
+.lead{color:var(--muted);margin:8px 0 18px}
+
+/* grid */
+.grid-container{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin:18px 0}
+
+/* card */
+.ui-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:16px;border-radius:var(--radius);box-shadow:var(--shadow-1);border:1px solid rgba(255,255,255,0.02);transition:transform .18s,box-shadow .18s}
+.ui-card:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(2,6,23,0.6)}
+.card-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.chip{background:rgba(255,255,255,0.04);padding:6px 8px;border-radius:999px;font-size:13px;color:var(--muted)}
+.card-body{color:var(--muted);margin:10px 0}
+.card-foot{display:flex;justify-content:flex-end}
+
+/* utility buttons */
+.btn{padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--muted);cursor:pointer}
+.btn.small{padding:6px 10px;font-size:13px}
+
+/* footer */
+.site-footer{padding:28px 0;color:var(--muted);text-align:center}
+
+/* rounded UI accents */
+.container{padding:28px}
+
+/* animations */
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+
+/* responsive */
+@media(max-width:740px){.hero h1{font-size:22px}}
