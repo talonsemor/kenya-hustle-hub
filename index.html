@@ -27,7 +27,6 @@
         <h2>Menu</h2>
         <nav class="nav-list">
           <a href="#" data-cat="all" class="nav-item active">All</a>
-          <a href="dashboard.html" class="nav-item">Dashboard</a>
           <a href="about.html" class="nav-item">About</a>
           <a href="submit.html" class="nav-item">Submit Hustle</a>
         </nav>
@@ -39,7 +38,6 @@
               <span class="toggle-knob" aria-hidden="true"></span>
             </button>
           </div>
-          <p class="small">MPESA: <strong id="mpesaNum">0740 582 544</strong></p>
         </div>
       </div>
     </aside>
@@ -59,6 +57,20 @@
         </div>
       </section>
 
+      <!-- Weather widget (weatherwidget.io) - user provided embed code for Nairobi -->
+      <section class="weather-wrapper wrap" aria-hidden="false">
+        <div class="weather-box card" role="region" aria-label="Local weather"
+             data-w-href="https://forecast7.com/en/40d71n74d01/new-york/"
+             data-w-label1="NAIROBI"
+             data-w-label2="WEATHER"
+             data-w-theme="original">
+          <h4 class="small" style="margin:0 0 8px 0">Weather</h4>
+          <a class="weatherwidget-io" href="https://forecast7.com/en/40d71n74d01/new-york/" data-label_1="NAIROBI" data-label_2="WEATHER" data-theme="original" >NAIROBI WEATHER</a>
+        </div>
+      </section>
+
+      <!-- weatherwidget.io script moved to end of body for correct loading -->
+
       <section id="listings" class="content wrap">
         <div class="controls card">
           <div class="filters">
@@ -70,7 +82,7 @@
 
         <div class="layout">
           <div class="feed-column">
-            <div id="items" class="items"></div>
+            <div id="items" class="items grid-small"></div>
             <div class="pager"><button id="loadMore" class="btn">Load more</button></div>
           </div>
 
@@ -95,5 +107,8 @@
   </div>
 
   <script type="module" src="js/app.js"></script>
+  <script>
+  !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
+  </script>
 </body>
 </html>
