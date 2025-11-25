@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Kenya Hustle Hub — Home</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"  <title>Kenya Hustle Hub  Home</title>
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/discovery.css">
 </head>
 <body class="dark">
   <div id="app">
@@ -47,7 +47,7 @@
         <div class="hero-bg" aria-hidden="true"></div>
         <div class="hero-overlay">
           <div class="hero-inner">
-            <h1>Find real hustles & income opportunities — updated daily</h1>
+            <h1>Find real hustles & income opportunities  updated daily</h1>
             <p class="lead">Verified listings, grants, tenders and online jobs for Kenyans. Fast, mobile-first and free.</p>
             <div class="hero-cta">
               <button id="exploreBtn" class="btn primary">Explore Hustles</button>
@@ -69,7 +69,7 @@
         </div>
       </section>
 
-      <!-- weatherwidget.io script moved to end of body for correct loading -->
+      <!-- Discovery Widget removed here to avoid duplication (kept inside listings feed-column) -->
 
       <section id="listings" class="content wrap">
         <div class="controls card">
@@ -83,6 +83,49 @@
         <div class="layout">
           <div class="feed-column">
             <div id="items" class="items grid-small"></div>
+            <!-- Discovery Widget - BBC News, Sports, Crypto Feeds (moved between feed 2 and 3) -->
+            <section class="discovery-wrapper wrap" aria-label="Discovery feeds">
+              <div class="discovery-box card">
+                <h2 class="discovery-title">🎯 Discovery</h2>
+                <div class="discovery-grid" id="discoveryGrid">
+                  <!-- News Feed Card -->
+                  <div class="discovery-card news-card" data-feed="news">
+                    <div class="discovery-header">
+                      <span class="feed-icon">📰</span>
+                      <h3>BBC News</h3>
+                    </div>
+                    <div class="discovery-content" id="newsContent">
+                      <div class="skeleton"></div>
+                      <div class="skeleton"></div>
+                    </div>
+                  </div>
+
+                  <!-- Sports Feed Card -->
+                  <div class="discovery-card sports-card" data-feed="sports">
+                    <div class="discovery-header">
+                      <span class="feed-icon">⚽</span>
+                      <h3>BBC Sport</h3>
+                    </div>
+                    <div class="discovery-content" id="sportsContent">
+                      <div class="skeleton"></div>
+                      <div class="skeleton"></div>
+                    </div>
+                  </div>
+
+                  <!-- Crypto Feed Card -->
+                  <div class="discovery-card crypto-card" data-feed="crypto">
+                    <div class="discovery-header">
+                      <span class="feed-icon">₿</span>
+                      <h3>Crypto News</h3>
+                    </div>
+                    <div class="discovery-content" id="cryptoContent">
+                      <div class="skeleton"></div>
+                      <div class="skeleton"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
             <div class="pager"><button id="loadMore" class="btn">Load more</button></div>
           </div>
 
@@ -98,7 +141,7 @@
 
       <footer class="site-footer">
         <div class="wrap">
-          <p>© 2025 Kenya Hustle Hub — All Rights Reserved</p>
+          <p> 2025 Kenya Hustle Hub  All Rights Reserved</p>
         </div>
       </footer>
     </main>
@@ -107,8 +150,10 @@
   </div>
 
   <script type="module" src="js/app.js"></script>
+  <script src="js/discovery.js"></script>
   <script>
-  !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
+  !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=''https://weatherwidget.io/js/widget.min.js'';fjs.parentNode.insertBefore(js,fjs);}}(document,''script'',''weatherwidget-io-js'');
+teElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
   </script>
 </body>
 </html>
