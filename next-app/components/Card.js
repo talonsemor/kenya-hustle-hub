@@ -1,6 +1,9 @@
-export default function Card({ title, children, tag }) {
+export default function Card({ title, children, tag, img }) {
   return (
     <article className="rounded-2xl bg-slate-900/80 border border-slate-800 shadow-xl hover:shadow-2xl transition p-6 flex flex-col gap-3">
+      {img && (
+        <img src={img} alt={title} className="rounded-xl w-full h-40 object-cover mb-3" loading="lazy" />
+      )}
       <div className="flex items-center justify-between gap-2 mb-1">
         <h3 className="font-semibold text-lg text-blue-200 flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
