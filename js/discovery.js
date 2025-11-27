@@ -1,5 +1,6 @@
 // Discovery Widget - BBC News, Sports, Crypto feeds
 // Adds proxy fallback and localStorage caching to avoid "Unable to load feed" errors
+// Optimized with parallel feed loading for faster performance
 
 const DISCOVERY_CONFIG = {
   feeds: [
@@ -7,7 +8,6 @@ const DISCOVERY_CONFIG = {
     { id: 'sports', name: 'BBC Sport', icon: '⚽', urls: ['https://feeds.bbci.co.uk/sport/rss.xml', 'https://feeds.bbci.co.uk/sport/football/rss.xml'] },
     { id: 'crypto', name: 'Crypto News', icon: '₿', urls: ['https://cointelegraph.com/feed', 'https://www.coindesk.com/arc/outboundfeeds/rss/'] }
   ],
-  // ordered list of proxies to try (public proxies)
   proxies: [
     'https://api.allorigins.win/get?url=',
     'https://api.allorigins.cf/get?url=',
@@ -95,14 +95,15 @@ async function fetchDiscoveryFeed(feedUrl){
 }
 
 async function getFeedItemsWithCache(feedConfig){
-  // try fresh fetch across configured feed urls
+  // Fetch URLs in parallel for faster loading
+  const fetchPromises = feedConfig.urls.map(url => fetchDiscoveryFeed(url).catch(e => { console.warn('url fetch error', url, e); return []; }));
+  const results = await Promise.race([Promise.all(fetchPromises), new Promise(resolve => setTimeout(() => resolve([]), DISCOVERY_CONFIG.timeout))]);
   let items = [];
-  for(const url of feedConfig.urls){
-    try{
-      const got = await fetchDiscoveryFeed(url);
-      if(got && got.length) items.push(...got);
+  if(Array.isArray(results)){
+    for(const result of results){
+      if(result && result.length) items.push(...result);
       if(items.length >= DISCOVERY_CONFIG.maxItems) break;
-    }catch(e){ console.warn('url fetch error', url, e); }
+    }
   }
   items = items.slice(0, DISCOVERY_CONFIG.maxItems);
   // if got results, cache and return
@@ -116,9 +117,10 @@ async function getFeedItemsWithCache(feedConfig){
 async function initializeDiscovery(){
   const discoveryGrid = document.getElementById('discoveryGrid');
   if(!discoveryGrid) return;
-  for(const feedConfig of DISCOVERY_CONFIG.feeds){
+  // Load all feeds in parallel for faster rendering
+  const feedPromises = DISCOVERY_CONFIG.feeds.map(async (feedConfig) => {
     const contentEl = document.getElementById(`${feedConfig.id}Content`);
-    if(!contentEl) continue;
+    if(!contentEl) return;
     contentEl.innerHTML = '';
     // show skeleton while loading
     for(let i=0;i<2;i++){ const s = document.createElement('div'); s.className='skeleton'; contentEl.appendChild(s); }
@@ -144,10 +146,11 @@ async function initializeDiscovery(){
           contentEl.appendChild(itemEl);
         });
       } else {
-        contentEl.innerHTML = `<div class=\"discovery-error\">No recent feeds available.</div>`;
+        contentEl.innerHTML = `<div class="discovery-error">No recent feeds available.</div>`;
       }
     }
-  }
+  });
+  await Promise.all(feedPromises);
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{
@@ -182,5 +185,105 @@ document.addEventListener('DOMContentLoaded', ()=>{
       setTimeout(()=>{ try{ obs.disconnect(); }catch(e){} }, 8000);
     }
   })();
-  setInterval(initializeDiscovery, 15 * 60 * 1000);
-});
+    setInterval(initializeDiscovery, 15 * 60 * 1000);
+
+    // ===== Highlight card: try RSS images then fallback to local assets =====
+    const HIGHLIGHT_FEEDS = [
+      'https://feeds.bbci.co.uk/sport/rss.xml',
+      'https://feeds.bbci.co.uk/news/rss.xml',
+      'https://www.coindesk.com/arc/outboundfeeds/rss/'
+    ];
+
+    async function fetchImageItemsFromFeed(feedUrl, max=5){
+      try{
+        const xml = await fetchWithProxy(feedUrl);
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(xml, 'text/xml');
+        const nodes = doc.querySelectorAll('item, entry');
+        const out = [];
+        for(let i=0;i<nodes.length && out.length<max;i++){
+          const n = nodes[i];
+          const title = (n.querySelector('title')?.textContent || '').trim();
+          const link = (n.querySelector('link')?.textContent || n.querySelector('link[rel="alternate"]')?.getAttribute('href') || '').trim();
+          const rawDesc = (n.querySelector('description')?.textContent || n.querySelector('summary')?.textContent || n.querySelector('content')?.textContent || '').trim();
+          let img = '';
+          const enc = n.querySelector('enclosure');
+          if(enc && enc.getAttribute) img = enc.getAttribute('url') || '';
+          if(!img){
+            const mc = n.querySelector('media\:content, media\\:thumbnail');
+            if(mc && mc.getAttribute) img = mc.getAttribute('url') || mc.getAttribute('medium') || '';
+          }
+          if(!img){
+            const m = rawDesc.match(/<img[^>]+src=["']?([^"'>\s]+)/i);
+            if(m) img = m[1];
+          }
+          if(img) out.push({ title, link, img, desc: rawDesc.replace(/<[^>]*>?/gm,'').slice(0,200) });
+        }
+        return out;
+      }catch(e){
+        console.warn('fetchImageItemsFromFeed failed', feedUrl, e && e.message);
+        return [];
+      }
+    }
+
+    async function buildHighlightItems(){
+      const results = [];
+      try{
+        const promises = HIGHLIGHT_FEEDS.map(u => fetchImageItemsFromFeed(u).catch(()=>[]));
+        const arrs = await Promise.all(promises);
+        for(const a of arrs){
+          for(const it of a){
+            if(!it.img) continue;
+            if(results.find(r=>r.img===it.img)) continue;
+            results.push(it);
+            if(results.length>=8) break;
+          }
+          if(results.length>=8) break;
+        }
+      }catch(e){ console.warn('buildHighlightItems error', e); }
+
+      // Local fallback assets (guaranteed to exist in repo)
+      const local = [
+        { title: 'Premier League Highlights', img: 'assets/images/discovery-premier-league.svg', desc: 'Catch up on the latest football action from the English Premier League.' },
+        { title: 'Oscars 2025 Winners', img: 'assets/images/discovery-oscars.svg', desc: 'See who took home the biggest awards in entertainment this year.' },
+        { title: 'Street Food Festival', img: 'assets/images/discovery-street-food.svg', desc: 'Explore the best street food from around the world, now trending.' },
+        { title: 'Hiking Trails Kenya', img: 'assets/images/discovery-hiking.svg', desc: 'Discover scenic hiking routes for all skill levels in Kenya.' },
+        { title: 'NBA Playoffs Update', img: 'assets/images/discovery-nba.svg', desc: 'Latest scores and highlights from the NBA playoffs.' },
+        { title: 'Music Festival Lineup', img: 'assets/images/discovery-music.svg', desc: 'Check out the artists performing at this year\'s biggest music festivals.' },
+        { title: 'Vegan Food Trends', img: 'assets/images/discovery-vegan.svg', desc: 'What\'s new and popular in the world of vegan cuisine?' },
+        { title: 'Mount Kenya Adventure', img: 'assets/images/discovery-kenya.svg', desc: 'Plan your next adventure to Mount Kenya with these tips.' }
+      ];
+
+      if(results.length < 8){
+        for(const l of local){
+          if(results.length>=8) break;
+          if(!results.find(r=>r.img===l.img)) results.push(l);
+        }
+      }
+      return results.slice(0,8);
+    }
+
+    // Build and rotate highlight card
+    (async function(){
+      try{
+        const items = await buildHighlightItems();
+        if(!items || !items.length) return;
+        const iconEl = document.getElementById('highlightIcon');
+        const titleEl = document.getElementById('highlightTitle');
+        const imgEl = document.getElementById('highlightImg');
+        const descEl = document.getElementById('highlightDesc');
+        let idx = 0;
+        function show(i){
+          const d = items[i];
+          if(!d) return;
+          if(iconEl) iconEl.textContent = d.icon || (d.title && d.title[0]) || '•';
+          if(titleEl) titleEl.textContent = d.title || '';
+          if(imgEl) { imgEl.src = d.img; imgEl.alt = d.title || 'image'; }
+          if(descEl) descEl.textContent = d.desc || '';
+        }
+        show(0);
+        setInterval(()=>{ idx = (idx+1) % items.length; show(idx); }, 4000);
+      }catch(e){ console.warn('highlight rotator init failed', e); }
+    })();
+  });
+

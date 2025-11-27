@@ -6,6 +6,19 @@
   <title>Kenya Hustle Hub — Home</title>
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/discovery.css">
+  <script>
+    (function(i,m,p,a,c,t){
+      c.ire_o=p;
+      c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};
+      t=a.createElement(m);
+      var z=a.getElementsByTagName(m)[0];
+      t.async=1;
+      t.src=i;
+      z.parentNode.insertBefore(t,z)
+    })('https://utt.impactcdn.com/P-A6730658-6e3d-44de-aa72-b8401efcd68e1.js','script','impactStat',document,window);
+    impactStat('transformLinks');
+    impactStat('trackImpression');
+  </script>
 </head>
 <body class="dark">
   <div id="app">
@@ -58,26 +71,43 @@
         </div>
       </section>
 
-      <!-- Modern Affiliate Box (after hero, replaces weather widget) -->
-      <section class="affiliate-wrapper wrap" aria-label="Sponsored offer">
-        <div id="affiliate-modern-box" class="card" style="margin-top:0;box-shadow:0 8px 32px rgba(14,30,80,0.10);border-radius:16px;background:linear-gradient(135deg,#f6f9ff 0%,#e0e7ff 100%);padding:18px 16px;max-width:340px;">
-          <div style="display:flex;align-items:center;gap:16px;">
-            <img src="assets/affiliate-placeholder.png" alt="Partner logo" style="width:60px;height:60px;border-radius:12px;object-fit:cover;box-shadow:0 2px 8px rgba(14,30,80,0.10);background:#fff;" onerror="this.style.display='none'">
-            <div>
-              <p style="font-weight:700;font-size:17px;margin:0 0 4px 0;color:#0b1220;">Partner Offer — Earn More</p>
-              <p style="font-size:13px;color:#475569;margin:0;">Curated for Kenya Hustle Hub users</p>
-            </div>
-          </div>
-          <p style="margin:16px 0 0 0;font-size:14px;color:#334155;">Discover exclusive cashback, sign-up bonuses, and smart tools to grow your side income. Trusted by thousands of Kenyans.</p>
-          <div style="display:flex;gap:10px;margin-top:16px;">
-            <a href="https://example.com/?ref=kenyahustlehub" target="_blank" rel="noopener noreferrer" style="flex:1;padding:12px 0;border-radius:10px;background:#0b5fff;color:#fff;font-weight:700;text-align:center;text-decoration:none;box-shadow:0 2px 8px rgba(11,95,255,0.10);">See Offer</a>
-            <a href="https://example.com/learn-more" target="_blank" rel="noopener noreferrer" style="flex:1;padding:12px 0;border-radius:10px;background:transparent;border:1px solid #0b5fff;color:#0b5fff;font-weight:700;text-align:center;text-decoration:none;">Learn more</a>
-          </div>
-          <div style="font-size:12px;color:#64748b;margin-top:12px;text-align:center;">We may receive commission for referrals. <a href="/about.html" style="color:inherit;text-decoration:underline">Learn more</a></div>
-        </div>
-      </section>
 
       <!-- Discovery Widget removed here to avoid duplication (kept inside listings feed-column) -->
+      <!-- Affiliate Modern Box (top position) -->
+      <section class="affiliate-wrapper wrap" aria-label="Sponsored offer">
+        <div id="affiliate-modern-box" style="margin:0">
+          <style>
+            #affiliate-modern-box{--bg1:#fff;--bg2:#f6f9ff;display:block;border-radius:12px;padding:14px;background:linear-gradient(180deg,var(--bg1),var(--bg2));box-shadow:0 6px 18px rgba(14,30,80,0.06);color:#0b1220;font-family:inherit}
+            #affiliate-modern-box .aff-header{display:flex;gap:12px;align-items:center}
+            #affiliate-modern-box .aff-logo{width:52px;height:52px;border-radius:10px;object-fit:cover;flex:0 0 52px}
+            #affiliate-modern-box .aff-title{font-weight:600;margin:0 0 4px 0}
+            #affiliate-modern-box .aff-sub{font-size:13px;color:#475569;margin:0}
+            #affiliate-modern-box .aff-cta{display:flex;gap:8px;margin-top:12px}
+            #affiliate-modern-box .aff-cta a{flex:1;text-decoration:none;padding:10px 12px;border-radius:8px;text-align:center;display:inline-block;font-weight:600}
+            #affiliate-modern-box .aff-cta .primary{background:#0b5fff;color:#fff}
+            #affiliate-modern-box .aff-cta .ghost{background:transparent;border:1px solid rgba(11,95,255,0.12);color:#0b5fff}
+            #affiliate-modern-box .aff-note{font-size:12px;color:#64748b;margin-top:10px;text-align:center}
+            @media (max-width:560px){#affiliate-modern-box{padding:12px}.aff-cta a{padding:10px}}
+          </style>
+
+          <div class="aff-header">
+            <img src="assets/affiliate-placeholder.png" alt="Partner logo" class="aff-logo" onerror="this.style.display='none'">
+            <div>
+              <p class="aff-title">Partner Offer — Earn More</p>
+              <p class="aff-sub">Curated for Kenya Hustle Hub users</p>
+            </div>
+          </div>
+
+          <p class="small" style="margin:12px 0 0 0">Explore this trusted partner to discover cashback, sign-up bonuses, and tools that help grow your side income.</p>
+
+          <div class="aff-cta">
+            <a class="primary" href="https://example.com/?ref=kenyahustlehub" target="_blank" rel="noopener noreferrer">See Offer</a>
+            <a class="ghost" href="https://example.com/learn-more" target="_blank" rel="noopener noreferrer">Learn more</a>
+          </div>
+
+          <div class="aff-note">We may receive commission for referrals. <a href="/about.html" style="color:inherit;text-decoration:underline">Learn more</a></div>
+        </div>
+      </section>
 
       <section id="listings" class="content wrap">
         <div class="controls card">
@@ -103,8 +133,8 @@
                       <h3>BBC News</h3>
                     </div>
                     <div class="discovery-content" id="newsContent">
-                      <div class="skeleton" style="will-change:opacity"></div>
-                      <div class="skeleton" style="will-change:opacity"></div>
+                      <div class="skeleton"></div>
+                      <div class="skeleton"></div>
                     </div>
                   </div>
 
@@ -115,20 +145,20 @@
                       <h3>BBC Sport</h3>
                     </div>
                     <div class="discovery-content" id="sportsContent">
-                      <div class="skeleton" style="will-change:opacity"></div>
-                      <div class="skeleton" style="will-change:opacity"></div>
+                      <div class="skeleton"></div>
+                      <div class="skeleton"></div>
                     </div>
                   </div>
 
-                  <!-- Crypto Feed Card -->
-                  <div class="discovery-card crypto-card" data-feed="crypto">
+                  <!-- Crypto Feed Card replaced with rotating highlights -->
+                  <div class="discovery-card highlight-card" id="highlightCard">
                     <div class="discovery-header">
-                      <span class="feed-icon">₿</span>
-                      <h3>Crypto News</h3>
+                      <span class="feed-icon" id="highlightIcon">⚽</span>
+                      <h3 id="highlightTitle">Premier League Highlights</h3>
                     </div>
-                    <div class="discovery-content" id="cryptoContent">
-                      <div class="skeleton" style="will-change:opacity"></div>
-                      <div class="skeleton" style="will-change:opacity"></div>
+                    <div class="discovery-content" id="highlightContent">
+                      <img id="highlightImg" src="assets/images/discovery-premier-league.svg" alt="Premier League Highlights" style="width:100%;max-width:120px;border-radius:10px;box-shadow:0 2px 8px #0002;display:block;margin:0 auto 10px;">
+                      <div id="highlightDesc" class="highlight-desc">Catch up on the latest football action from the English Premier League.</div>
                     </div>
                   </div>
                 </div>
@@ -143,23 +173,6 @@
 
             <h3 style="margin-top:16px">Quick Tags</h3>
             <div id="quickTags" class="tags"></div>
-
-            <!-- Modern Affiliate Box (single, updated design) -->
-            <div id="affiliate-modern-box" aria-label="Sponsored offer" style="margin-top:18px;box-shadow:0 8px 32px rgba(14,30,80,0.10);border-radius:16px;background:linear-gradient(135deg,#f6f9ff 0%,#e0e7ff 100%);padding:18px 16px;max-width:340px;">
-              <div style="display:flex;align-items:center;gap:16px;">
-                <img src="assets/affiliate-placeholder.png" alt="Partner logo" style="width:60px;height:60px;border-radius:12px;object-fit:cover;box-shadow:0 2px 8px rgba(14,30,80,0.10);background:#fff;" onerror="this.style.display='none'">
-                <div>
-                  <p style="font-weight:700;font-size:17px;margin:0 0 4px 0;color:#0b1220;">Partner Offer — Earn More</p>
-                  <p style="font-size:13px;color:#475569;margin:0;">Curated for Kenya Hustle Hub users</p>
-                </div>
-              </div>
-              <p style="margin:16px 0 0 0;font-size:14px;color:#334155;">Discover exclusive cashback, sign-up bonuses, and smart tools to grow your side income. Trusted by thousands of Kenyans.</p>
-              <div style="display:flex;gap:10px;margin-top:16px;">
-                <a href="https://example.com/?ref=kenyahustlehub" target="_blank" rel="noopener noreferrer" style="flex:1;padding:12px 0;border-radius:10px;background:#0b5fff;color:#fff;font-weight:700;text-align:center;text-decoration:none;box-shadow:0 2px 8px rgba(11,95,255,0.10);">See Offer</a>
-                <a href="https://example.com/learn-more" target="_blank" rel="noopener noreferrer" style="flex:1;padding:12px 0;border-radius:10px;background:transparent;border:1px solid #0b5fff;color:#0b5fff;font-weight:700;text-align:center;text-decoration:none;">Learn more</a>
-              </div>
-              <div style="font-size:12px;color:#64748b;margin-top:12px;text-align:center;">We may receive commission for referrals. <a href="/about.html" style="color:inherit;text-decoration:underline">Learn more</a></div>
-            </div>
           </aside>
         </div>
       </section>
@@ -174,8 +187,8 @@
     <div id="loader" class="loader"><div class="spinner"></div></div>
   </div>
 
-  <script type="module" src="js/app.js" defer></script>
-  <script src="js/discovery.js" defer></script>
+  <script type="module" src="js/app.js"></script>
+  <script src="js/discovery.js"></script>
   <script>
   !function(d,s,id){
     var js,fjs=d.getElementsByTagName(s)[0];
@@ -186,22 +199,7 @@
       fjs.parentNode.insertBefore(js,fjs);
     }
   }(document,'script','weatherwidget-io-js');
-
-  // Fallback: if widget doesn't initialize, show a simple link so users still get the forecast
-  (function(){
-    function showFallback(){
-      var box = document.querySelector('.weather-box');
-      if(!box) return;
-      var hasIframe = !!box.querySelector('iframe');
-      if(hasIframe) return;
-      var link = '<h4 class="small" style="margin:0 0 8px 0">Weather</h4>' +
-                 '<p class="small">Weather widget failed to load. ' +
-                 '<a href="https://forecast7.com/en/1d29n36d82/nairobi/" target="_blank" rel="noopener noreferrer">Open forecast for Nairobi</a></p>';
-      box.innerHTML = link;
-    }
-    setTimeout(showFallback, 1400);
-    setTimeout(showFallback, 4000);
-  })();
   </script>
 </body>
 </html>
+
