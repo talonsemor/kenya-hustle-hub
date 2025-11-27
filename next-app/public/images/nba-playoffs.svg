@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#efb719" />
+  <g fill="#111827" font-family="Segoe UI, Roboto, Arial" font-weight="700">
+    <text x="40" y="90" font-size="48">NBA Playoffs</text>
+    <text x="40" y="150" font-size="28" font-weight="500">Scores & Highlights</text>
+  </g>
+  <g transform="translate(620,220)" fill="#111827">
+    <text x="0" y="0" font-size="56">🏀</text>
+  </g>
+</svg>

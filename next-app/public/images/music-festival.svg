@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400">
+  <rect width="800" height="400" fill="#06b6d4" />
+  <g fill="#fff" font-family="Segoe UI, Roboto, Arial" font-weight="700">
+    <text x="40" y="90" font-size="48">Music Festival</text>
+    <text x="40" y="150" font-size="28" font-weight="500">Lineups & Tickets</text>
+  </g>
+  <g transform="translate(640,220)" fill="#fff">
+    <text x="0" y="0" font-size="56">🎵</text>
+  </g>
+</svg>
